@@ -7,10 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ProyectoFinalAplicada2.Models;
-using Microsoft.EntityFrameworkCore;
 
-namespace ProyectoFinalAplicada2
+namespace EventosAPI
 {
     public class Startup
     {
@@ -29,11 +27,8 @@ namespace ProyectoFinalAplicada2
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.]\
-        
+            // Add framework services.
             services.AddMvc();
-            services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("VentasDB")));
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,24 +37,7 @@ namespace ProyectoFinalAplicada2
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
-
-            app.UseStaticFiles();
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseMvc();
         }
     }
 }
