@@ -4,7 +4,7 @@
 <div ng-app="App">
     <div>
     <div ng-controller="EventosController">
-        <table class="table">
+        <table class="table table-hover" style="cursor:pointer">
             <thead>
                 <tr>
                     <th>Evento Id</th>
@@ -13,7 +13,11 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="evento in eventos"><td>{{"Hola"}}</td></tr>
+                <tr ng-repeat="evento in eventos" ng-click="eventoClicked(evento)">
+                    <td>{{evento.id}}</td>
+                    <td>{{evento.descripcion}}</td>
+                    <td>{{evento.fecha}}</td>
+                </tr>
             </tbody>
         </table>
     </div>
