@@ -1,49 +1,44 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoFinalAplicada2.Models;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace ProyectoFinalAplicada2
+namespace ProyectoFinalAplicada2.API
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/Eventos")]
     public class EventosController : Controller
     {
         private readonly Context _context;
+
         public EventosController(Context context)
         {
             _context = context;
         }
-        // GET: api/eventos
-        [HttpGet]
-        public IEnumerable<Evento> Get()
-        {
-            var eventos = _context.Eventos;
 
-            foreach (var evento in eventos)
-            {
-                _context.Entry(evento).Collection(b => b.Boletas).Load();
-            }
-            return eventos;
+        // GET: api/Eventos
+        [HttpGet]
+        public IEnumerable<Evento> GetEventos()
+        {
+            return _context.Eventos;
         }
 
-        // GET api/eventos/5
+        // GET: api/Eventos/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get([FromRoute] int id)
+        public async Task<IActionResult> GetEvento([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var evento = await _context.Eventos.FirstOrDefaultAsync(e => e.Id == id);
+            var evento = await _context.Eventos.SingleOrDefaultAsync(m => m.Id == id);
 
-            if (evento == null) 
+            if (evento == null)
             {
                 return NotFound();
             }
@@ -51,43 +46,21 @@ namespace ProyectoFinalAplicada2
             return Ok(evento);
         }
 
-        // POST api/eventos
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody]Evento evento)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            _context.Eventos.Add(evento);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("Get", new { id = evento.Id }, evento);
-        }
-
-        // PUT api/eventos/5
+        // PUT: api/Eventos/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Evento evento)
+        public async Task<IActionResult> PutEvento([FromRoute] int id, [FromBody] Evento evento)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             if (id != evento.Id)
             {
                 return BadRequest();
             }
 
-            if(_context.Entry(evento).State == EntityState.Detached)
-            {
-                _context.Eventos.Attach(evento);
-            }
-            else
-            {
-                _context.Entry(evento).CurrentValues.SetValues(evento);
-                _context.Entry(evento).State = EntityState.Modified;
-            }
+            _context.Entry(evento).State = EntityState.Modified;
 
             try
             {
@@ -95,7 +68,7 @@ namespace ProyectoFinalAplicada2
             }
             catch (DbUpdateConcurrencyException)
             {
-                if(!eventoExists(id))
+                if (!EventoExists(id))
                 {
                     return NotFound();
                 }
@@ -104,14 +77,30 @@ namespace ProyectoFinalAplicada2
                     throw;
                 }
             }
+
             return NoContent();
         }
 
-        // DELETE api/eventos/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        // POST: api/Eventos
+        [HttpPost]
+        public async Task<IActionResult> PostEvento([FromBody] Evento evento)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            evento.Fecha = DateTime.Now;
+            _context.Eventos.Add(evento);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetEvento", new { id = evento.Id }, evento);
+        }
+
+        // DELETE: api/Eventos/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEvento([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -126,10 +115,9 @@ namespace ProyectoFinalAplicada2
             await _context.SaveChangesAsync();
 
             return Ok(evento);
-
         }
 
-        private bool eventoExists(int id)
+        private bool EventoExists(int id)
         {
             return _context.Eventos.Any(e => e.Id == id);
         }

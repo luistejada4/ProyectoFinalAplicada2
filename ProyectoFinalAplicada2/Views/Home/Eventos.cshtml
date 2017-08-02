@@ -1,5 +1,23 @@
 ﻿@{
     ViewData["Title"] = "Eventos";
 }
+<div ng-app="App">
+    <div>
+    <div ng-controller="EventosController">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Evento Id</th>
+                    <th>Descripcion</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="evento in eventos"><td>{{"Hola"}}</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
 
 

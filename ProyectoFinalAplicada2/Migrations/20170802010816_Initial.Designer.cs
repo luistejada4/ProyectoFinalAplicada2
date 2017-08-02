@@ -8,8 +8,8 @@ using ProyectoFinalAplicada2.Models;
 namespace ProyectoFinalAplicada2.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20170801113449_initial")]
-    partial class initial
+    [Migration("20170802010816_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
